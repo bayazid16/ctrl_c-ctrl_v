@@ -62,23 +62,16 @@ class TickerAnalysisView(generics.CreateAPIView):
         try:
             completion = client.models.generate_content(
                 model="gemini-2.5-flash",
-                temperature=0,
-                response_format={"type": "json_object"},
-                messages=[
-                    {
-                        "role": "system",
-                        "content": SYSTEM_PROMPT
-                    },
-                    {
-                        "role": "user",
-                        "content": user_prompt
-                    }
-                ]
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    temperature=0.0,
+                    response_mime_type="application/json",
+                )
             )
+            ai_response = json.loads(completion.text)
 
-            ai_response = json.loads(
-                completion.choices[0].message.content
-            )
+            
 
             ai_response["ticket_id"] =ticket_id
 
