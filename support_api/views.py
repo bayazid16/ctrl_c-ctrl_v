@@ -55,11 +55,11 @@ class TickerAnalysisView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        user_prompt = f"Ticket ID: {ticket_id}\nComplaint: {complaint}\nTransaction History: {json.dumps(transaction_history,indent=2)}"
+        user_prompt = json.dumps(request.data, indent=2)
 
         try:
             completion = client.chat.completions.create(
-                model="gpt-4.1-mini",
+                model="gpt-4o-mini",
                 temperature=0,
                 response_format={"type": "json_object"},
                 messages=[
@@ -81,10 +81,14 @@ class TickerAnalysisView(generics.CreateAPIView):
             ai_response["ticket_id"] =ticket_id
 
             save_data = {
-                "ticket_id":ticket_id,
-                "complaint":complaint,
-                "transaction_history":transaction_history,
-                **ai_response
+            "ticket_id": ticket_id,
+            "complaint": complaint,
+            "language": request.data.get("language"),
+            "channel": request.data.get("channel"),
+            "user_type": request.data.get("user_type"),
+            "campaign_context": request.data.get("campaign_context"),
+            "transaction_history": transaction_history,
+            **ai_response
             }
 
             serializer = self.get_serializer(data=save_data)
