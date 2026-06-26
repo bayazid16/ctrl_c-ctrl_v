@@ -2,7 +2,7 @@ from django.db import models
 
 class TickerAnalysis(models.Model):
     #user input 
-    ticket_id = models.CharField(max_length=100, unique=True)
+    ticket_id = models.CharField(max_length=100, unique=False)
     complaint=models.TextField()
     transaction_history = models.JSONField(default=list)
 
