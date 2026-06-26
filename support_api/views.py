@@ -2,6 +2,7 @@ from django.shortcuts import render
 import json 
 import os
 from google import genai
+from google.genai import types
 from openai import OpenAI
 from rest_framework import generics,status
 from rest_framework.response import Response  
@@ -59,7 +60,7 @@ class TickerAnalysisView(generics.CreateAPIView):
         user_prompt = json.dumps(request.data, indent=2)
 
         try:
-            completion = client.chat.completions.create(
+            completion = client.models.generate_content(
                 model="gemini-2.5-flash",
                 temperature=0,
                 response_format={"type": "json_object"},
