@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import json 
 import os
+from google import genai
 from openai import OpenAI
 from rest_framework import generics,status
 from rest_framework.response import Response  
@@ -9,7 +10,7 @@ from .models import TickerAnalysis
 from .serializers import TickerAnalysisSerializer
 
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = genai.Client()
 
 
 SYSTEM_PROMPT = """You are a Finetech support AI.
@@ -59,7 +60,7 @@ class TickerAnalysisView(generics.CreateAPIView):
 
         try:
             completion = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gemini-2.5-flash",
                 temperature=0,
                 response_format={"type": "json_object"},
                 messages=[
