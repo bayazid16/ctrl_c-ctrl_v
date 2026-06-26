@@ -10,7 +10,7 @@ services:
       - .:/app
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/numb_db
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/numb_db?sslmode=disable
     depends_on:
       - db
 

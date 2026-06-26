@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lh&jowi$vq)-e-he8zk4b_)_%35w$tu7-nsf_zvjbzcmxb80l^'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',#3rd party
+    'corsheaders',#3rd party
+    'support_api',#local
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',#new
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +54,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'numb.urls'
 
 TEMPLATES = [
@@ -86,12 +91,12 @@ DATABASES = {
         conn_max_age=600,
     )
 }
-
-# Force SSL connection.
-if os.environ.get('DATABASE_URL'):
-    DATABASES['default']['OPTIONS'] = {
-        'sslmode': 'require',
-    }
+if not DEBUG:
+    # Force SSL connection.
+    if os.environ.get('DATABASE_URL'):
+        DATABASES['default']['OPTIONS'] = {
+            'sslmode': 'require',
+        }
 
 
 # Password validation
@@ -135,3 +140,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+SECURE_SSL_REDIRECT = True 
+SESSION_COOKIE_SECURE = True 
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
