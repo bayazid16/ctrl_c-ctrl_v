@@ -80,6 +80,12 @@ class TickerAnalysisView(generics.CreateAPIView):
 
             ai_response["ticket_id"] =ticket_id
 
+            ai_response["severity"] = ai_response["severity"].lower()
+
+            ai_response["evidence_verdict"] = ai_response["evidence_verdict"].lower()
+
+            ai_response["department"] = ai_response["department"].lower()
+
             save_data = {
             "ticket_id": ticket_id,
             "complaint": complaint,
